@@ -2,6 +2,7 @@ module Main where
 import Exploradores
 import Test.HUnit
 import Data.List
+import Prelude hiding ((<*>))
 
 --Nota: para poder cargar este archivo es necesario completar todas las declaraciones de tipos que faltan en Exploradores.hs.
 
@@ -54,8 +55,8 @@ testsExpListas = test [
   ]
 
 testsExpNaturales = test [
-  [[1,1], [2]] ~=? listasQueSuman 2,
-  [[1,1,1],[1,2],[2,1],[3]] ~=? listasQueSuman 3,
+  sort [[1,1], [2]] ~=? sort (listasQueSuman 2),
+  sort [[1,1,1],[1,2],[2,1],[3]] ~=? sort (listasQueSuman 3),
   [[]] ~=? listasQueSuman 0
   ]
 
@@ -80,13 +81,13 @@ testsExpRT = test [
 testsExpCondicional = test [
     [2] ~=? ifExp even expId expNulo 2,
     [] ~=? ifExp even expId expNulo 3,
-    [[1,1,1],[1,2],[2,1],[3]] ~=? ifExp (\x-> x < 4) listasQueSuman expNulo 3,
+    sort [[1,1,1],[1,2],[2,1],[3]] ~=? sort (ifExp (\x-> x < 4) listasQueSuman expNulo 3),
     [] ~=? ifExp (\x-> x < 4) listasQueSuman expNulo 100
     ]
 
 testsExpConcatenacion = test [
   [4,2,1,3,6,5,7,1,2,3,4,5,6,7] ~=? (preorder <++> inorder) ab5,
-  [[1, 1, 1], [1, 2], [2, 1], [3], [1, 1, 1], [1, 2], [2, 1], [3]] ~=? (listasQueSuman <++> listasQueSuman) 3,
+  sort [[1, 1, 1], [1, 2], [2, 1], [3], [1, 1, 1], [1, 2], [2, 1], [3]] ~=? sort ((listasQueSuman <++> listasQueSuman) 3),
   [1,2,0,5,3,5,6,7,4, 0,5,5,7,4] ~=? (dfsRT <++> hojasRT) rt6,
   sort ["w", "x", "y", "z", "wxyz", "xyz", "yz", "z", ""] ~=? sort ((singletons <++> sufijos) "wxyz")
 

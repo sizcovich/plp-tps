@@ -1,5 +1,7 @@
 module Exploradores (Explorador, AB(Nil,Bin), RoseTree(Rose), foldNat, foldRT, foldAB, expNulo, expId, expHijosRT, expHijosAB, expTail, ifExp, singletons, sufijos, inorder, preorder, postorder, dfsRT, ramasRT, hojasRT, listasQueSuman, listasDeLongitud, (<.>), (<^>), (<++>), (<*>)) where
 
+import Prelude hiding ((<*>))
+
 --Definiciones de tipos
 
 type Explorador a b = a -> [b]
