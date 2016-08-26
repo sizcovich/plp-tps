@@ -31,23 +31,27 @@ padAB n base (Bin i x d) = pad n ++ show x ++ padAB 4 (base+l) i ++ "\n" ++ padA
 
 --Ejercicio 1
 expNulo :: Explorador a b
-expNulo = undefined
+expNulo = (\x -> [])
 
 expId :: Explorador a a
-expId = undefined
+expId = (\x -> [x])
 
 expHijosRT :: Explorador (RoseTree a) (RoseTree a)
-expHijosRT = undefined
+expHijosRT (Rose x ys) = ys
 
 expHijosAB :: Explorador(AB a) (AB a)
-expHijosAB = undefined
+expHijosAB Nil = []
+expHijosAB (Bin x y z) = [x,z]
 
 expTail :: Explorador [a] a
-expTail = undefined
+expTail [] = []
+expTail (x:xs) = xs
 
 --Ejercicio 2
---foldNat :: undefined
-foldNat = undefined
+foldNat :: (b->b) -> b -> Integer -> b
+foldNat s z 0 = z
+foldNat s z n = if n<0 then error (show n ++ " no es un natural") 
+                else (foldNat s z (n-1))
 
 --foldRT :: undefined
 foldRT = undefined
