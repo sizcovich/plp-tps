@@ -62,7 +62,7 @@ foldAB f z (Bin x y w) = f (foldAB f z x) y (foldAB f z w)
 
 --Ejercicio 3
 singletons :: Explorador [a] [a]
-singletons = undefined
+singletons = foldr (\x -> (:) [x]) []
 
 sufijos :: Explorador [a] [a]
 sufijos = undefined
