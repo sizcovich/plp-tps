@@ -69,8 +69,9 @@ sufijos :: Explorador [a] [a]
 sufijos = foldr (\currentElem rec -> (currentElem : head rec) : rec) [[]]
 
 --Ejercicio 4
---listasQueSuman :: Explorador Integer ?
-listasQueSuman = undefined
+listasQueSuman :: Explorador Integer [Integer]
+listasQueSuman 0 = [[]] 
+listasQueSuman total = [ i : ls  | i <- [1 .. total], ls <- listasQueSuman (total-i)]
 
 --Ejercicio 5
 --preorder :: undefined
