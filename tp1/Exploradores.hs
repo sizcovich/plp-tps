@@ -54,7 +54,9 @@ foldNat s z n = if n<0 then error (show n ++ " no es un natural")
                 else (foldNat s z (n-1))
 
 --foldRT :: undefined
-foldRT = undefined
+foldRT :: (a->b->b) -> RoseTree a -> b -> b
+foldRT fRose (Rose r []) z = fRose r z
+foldRT fRose (Rose r rts) z = foldr (foldRT fRose) (fRose r z) rts
 
 --foldAB :: undefined
 foldAB = undefined
