@@ -69,19 +69,20 @@ sufijos :: Explorador [a] [a]
 sufijos = foldr (\currentElem rec -> (currentElem : head rec) : rec) [[]]
 
 --Ejercicio 4
+--No se responder esto con claridad porque aun no me di cuenta como encararlo con foldNat ni que implicaria el hacerlo (ver luego)
 listasQueSuman :: Explorador Integer [Integer]
 listasQueSuman 0 = [[]] 
 listasQueSuman total = [ i : ls  | i <- [1 .. total], ls <- listasQueSuman (total-i)]
 
 --Ejercicio 5
---preorder :: undefined
-preorder = undefined
-
+preorder :: AB a -> [a]
+preorder = foldAB (\reciz raiz recder -> [raiz] ++ reciz ++ recder ) []
 --inorder :: undefined
-inorder = undefined
-
+inorder :: AB a -> [a]
+inorder = foldAB (\reciz raiz recder -> reciz ++ [raiz] ++ recder ) []
 --postorder :: undefined
-postorder = undefined
+postorder :: AB a -> [a]
+postorder = foldAB (\reciz raiz recder -> reciz ++ recder ++ [raiz] ) []
 
 --Ejercicio 6
 dfsRT :: Explorador (RoseTree a) a
