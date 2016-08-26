@@ -56,8 +56,9 @@ foldNat s z n = if n<0 then error (show n ++ " no es un natural")
 --foldRT :: undefined
 foldRT = undefined
 
---foldAB :: undefined
-foldAB = undefined
+foldAB :: (b -> a -> b -> b) -> b -> AB a -> b 
+foldAB f z Nil = z
+foldAB f z (Bin x y w) = f (foldAB f z x) y (foldAB f z w)
 
 --Ejercicio 3
 singletons :: Explorador [a] [a]
