@@ -58,12 +58,13 @@ foldRT :: (a->b->b) -> RoseTree a -> b -> b
 foldRT fRose (Rose r []) z = fRose r z
 foldRT fRose (Rose r rts) z = foldr (foldRT fRose) (fRose r z) rts
 
---foldAB :: undefined
-foldAB = undefined
+foldAB :: (b -> a -> b -> b) -> b -> AB a -> b 
+foldAB f z Nil = z
+foldAB f z (Bin x y w) = f (foldAB f z x) y (foldAB f z w)
 
 --Ejercicio 3
 singletons :: Explorador [a] [a]
-singletons = undefined
+singletons = foldr (\x -> (:) [x]) []
 
 sufijos :: Explorador [a] [a]
 sufijos = undefined
