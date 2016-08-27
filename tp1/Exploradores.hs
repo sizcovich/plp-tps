@@ -95,7 +95,7 @@ hojasRT = foldRT (\rose rec -> case rec of
 ramasRT :: Explorador (RoseTree a) [a]
 ramasRT = foldRT (\rose rec -> case rec of
 							[]	-> [[rose]]
-							(x:xs)	-> map (\path -> rose : concat path) rec)
+							(x:xs)	-> map (\path -> rose : path) (concat rec))
 
 --Ejercicio 7
 ifExp :: (a->Bool) -> Explorador a b -> Explorador a b -> Explorador a b
