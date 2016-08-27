@@ -88,10 +88,14 @@ dfsRT :: Explorador (RoseTree a) a
 dfsRT = foldRT (\rose rec -> [rose] ++ concat rec)
 
 hojasRT :: Explorador (RoseTree a) a
-hojasRT = undefined
+hojasRT = foldRT (\rose rec -> case rec of
+							[]	-> [rose]
+							(x:xs)	-> concat rec)
 
 ramasRT :: Explorador (RoseTree a) [a]
-ramasRT = undefined
+ramasRT = foldRT (\rose rec -> case rec of
+							[]	-> [[rose]]
+							(x:xs)	-> map (\path -> rose : concat path) rec)
 
 --Ejercicio 7
 ifExp :: (a->Bool) -> Explorador a b -> Explorador a b -> Explorador a b
