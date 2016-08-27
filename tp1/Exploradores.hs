@@ -99,7 +99,9 @@ ramasRT = foldRT (\rose rec -> case rec of
 
 --Ejercicio 7
 ifExp :: (a->Bool) -> Explorador a b -> Explorador a b -> Explorador a b
-ifExp = undefined
+ifExp f exp1 exp2 =  (\x -> case (f x) of 
+						True ->  exp1 x 
+						False->	 exp2 x ) 
 
 --Ejercicio 8
 (<++>) :: Explorador a b -> Explorador a b -> Explorador a b
