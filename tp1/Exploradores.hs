@@ -54,7 +54,7 @@ foldNat s z n = if n<0 then error (show n ++ " no es un natural")
                 else (foldNat s z (n-1))
 
 foldRT :: (a->[b]->b) -> RoseTree a -> b
-foldRT f (Rose x rts) = f x (map (foldRT2 f) rts)
+foldRT f (Rose x rts) = f x (map (foldRT f) rts)
 
 foldAB :: (b -> a -> b -> b) -> b -> AB a -> b 
 foldAB f z Nil = z
