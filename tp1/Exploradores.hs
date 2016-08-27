@@ -75,13 +75,13 @@ listasQueSuman 0 = [[]]
 listasQueSuman total = [ i : ls  | i <- [1 .. total], ls <- listasQueSuman (total-i)]
 
 --Ejercicio 5
-preorder :: AB a -> [a]
-preorder = foldAB (\reciz raiz recder -> [raiz] ++ reciz ++ recder ) []
+preorder :: Explorador (AB a) a
+preorder =  foldAB (\reciz raiz recder -> [raiz] ++ reciz ++ recder ) []
 --inorder :: undefined
-inorder :: AB a -> [a]
+inorder ::  Explorador (AB a) a
 inorder = foldAB (\reciz raiz recder -> reciz ++ [raiz] ++ recder ) []
 --postorder :: undefined
-postorder :: AB a -> [a]
+postorder :: Explorador (AB a) a
 postorder = foldAB (\reciz raiz recder -> reciz ++ recder ++ [raiz] ) []
 
 --Ejercicio 6
