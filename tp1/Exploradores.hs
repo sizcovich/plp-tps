@@ -105,15 +105,15 @@ ifExp f exp1 exp2 =  (\x -> case (f x) of
 
 --Ejercicio 8
 (<++>) :: Explorador a b -> Explorador a b -> Explorador a b
-(<++>) = undefined
+(<++>) exp1 exp2 = (\x -> exp1 x ++ exp2 x)
 
 --Ejercicio 9
 (<.>) :: Explorador b c -> Explorador a b -> Explorador a c
-(<.>) = undefined
+(<.>) exp1 exp2 = undefined
 
 --Ejercicio 10
 (<^>) :: Explorador a a -> Integer -> Explorador a a
-(<^>) = undefined
+(<^>) = undefined --- esta se hace con break o recr 
 
 --Ejercicio 11 (implementar al menos una de las dos)
 listasDeLongitud :: Explorador Integer [Integer]
