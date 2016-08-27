@@ -85,7 +85,7 @@ postorder = foldAB (\reciz raiz recder -> reciz ++ recder ++ [raiz] ) []
 
 --Ejercicio 6
 dfsRT :: Explorador (RoseTree a) a
-dfsRT = undefined
+dfsRT = foldRT (\rose rec -> [rose] ++ concat rec)
 
 hojasRT :: Explorador (RoseTree a) a
 hojasRT = undefined
