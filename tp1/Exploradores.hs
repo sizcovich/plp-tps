@@ -109,7 +109,7 @@ ifExp f exp1 exp2 =  (\x -> case (f x) of
 
 --Ejercicio 9
 (<.>) :: Explorador b c -> Explorador a b -> Explorador a c
-(<.>) exp1 exp2 = undefined
+(<.>) exp1 exp2 = (\x -> concat $ map exp1 (exp2 x))
 
 --Ejercicio 10
 (<^>) :: Explorador a a -> Integer -> Explorador a a
