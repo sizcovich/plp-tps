@@ -89,8 +89,8 @@ dfsRT = foldRT (\rose rec -> [rose] ++ concat rec)
 
 hojasRT :: Explorador (RoseTree a) a
 hojasRT = foldRT (\rose rec -> case rec of
-							[]	-> [rose]
-							(x:xs)	-> concat rec)
+					[]	-> [rose]
+					(x:xs)	-> concat rec)
 
 ramasRT :: Explorador (RoseTree a) [a]
 ramasRT = foldRT (\rose rec -> case rec of
@@ -113,11 +113,11 @@ ifExp f exp1 exp2 =  (\x -> case (f x) of
 
 --Ejercicio 10
 (<^>) :: Explorador a a -> Integer -> Explorador a a
-(<^>) = undefined --- esta se hace con break o recr 
+(<^>) expl n = foldNat ((<.>) expl) expl (n-1)
 
 --Ejercicio 11 (implementar al menos una de las dos)
 listasDeLongitud :: Explorador Integer [Integer]
-listasDeLongitud = undefined
+listasDeLongitud n = filter (\ll -> toInteger(length ll) == n ) [ l | i <- [n .. ] , l <- listasQueSuman i ]
 
 (<*>) :: Explorador a a -> Explorador a [a] 
-(<*>) = undefined
+(<*>) = undefined	
