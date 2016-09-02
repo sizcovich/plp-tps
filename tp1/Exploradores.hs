@@ -51,7 +51,7 @@ expTail (x:xs) = xs
 foldNat :: (b->b) -> b -> Integer -> b
 foldNat s z 0 = z
 foldNat s z n = if n<0 then error (show n ++ " no es un natural") 
-                else (foldNat s z (n-1))
+                else (foldNat s (s z) (n-1))
 
 foldRT :: (a->[b]->b) -> RoseTree a -> b
 foldRT f (Rose x rts) = f x (map (foldRT f) rts)
@@ -115,9 +115,12 @@ ifExp f exp1 exp2 =  (\x -> case (f x) of
 (<^>) :: Explorador a a -> Integer -> Explorador a a
 (<^>) expl n = foldNat ((<.>) expl) expl (n-1)
 
---Ejercicio 11 (implementar al menos una de las dos)
+--Ejercicio 11
 listasDeLongitud :: Explorador Integer [Integer]
-listasDeLongitud n = filter (\ll -> toInteger(length ll) == n ) [ l | i <- [n .. ] , l <- listasQueSuman i ]
+listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[n .. ]]
 
+paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
+paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
+ 
 (<*>) :: Explorador a a -> Explorador a [a] 
-(<*>) = undefined	
+(<*>) = undefined
