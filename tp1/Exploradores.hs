@@ -120,8 +120,12 @@ listasDeLongitud :: Explorador Integer [Integer]
 listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[n .. ]]
 
 paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
-paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
- 
+paresSumatoriaLista suma n = filter fFilter $ foldNat fFold [(0,[])] n
+ 								where 
+ 									fFilter = (\pair->fst pair == suma)
+ 									fFold = (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]])
+
 (<*>) :: Explorador a a -> Explorador a [a] 
-(<*>) exp  =  undefined
+(<*>)  exp = undefined --takeWhile(<>[])  (\y ->iterate exp y)
+
 
