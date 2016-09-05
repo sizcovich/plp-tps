@@ -125,6 +125,6 @@ paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pai
 --(<*>) :: Explorador a a -> Explorador a [a] 
 --(<*>) exp = undefined --takeWhile (/=[]) (\y ->iterate exp y)
 (<*>) :: Eq a => Explorador a a -> Explorador a [a] 
-(<*>) expl x = let xs = iterate (\pair -> (snd pair , concat $ map expl $ snd pair)) (expl x, expl x) in 
-			[x] : (map (fst) $ takeWhile (\pair -> fst pair /= snd pair) (tail xs))
+(<*>) expl x = let xs = iterate (\xs -> concat $ map expl xs) (expl x) in 
+			takeWhile (\ys -> ys /= []) xs
 			
