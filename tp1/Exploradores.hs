@@ -62,7 +62,7 @@ foldAB f z (Bin x y w) = f (foldAB f z x) y (foldAB f z w)
 
 --Ejercicio 3
 singletons :: Explorador [a] [a]
-singletons = foldr (\x -> (:) [x]) []
+singletons = map (\x -> [x])
 
 sufijos :: Explorador [a] [a]
 sufijos = foldr (\currentElem rec -> (currentElem : head rec) : rec) [[]]
@@ -76,10 +76,10 @@ listasQueSuman total = [ i : ls  | i <- [1 .. total], ls <- listasQueSuman (tota
 --Ejercicio 5
 preorder :: Explorador (AB a) a
 preorder =  foldAB (\reciz raiz recder -> [raiz] ++ reciz ++ recder ) []
---inorder :: undefined
+
 inorder ::  Explorador (AB a) a
 inorder = foldAB (\reciz raiz recder -> reciz ++ [raiz] ++ recder ) []
---postorder :: undefined
+
 postorder :: Explorador (AB a) a
 postorder = foldAB (\reciz raiz recder -> reciz ++ recder ++ [raiz] ) []
 
@@ -89,19 +89,19 @@ dfsRT = foldRT (\rose rec -> [rose] ++ concat rec)
 
 hojasRT :: Explorador (RoseTree a) a
 hojasRT = foldRT (\rose rec -> case rec of
-					[]	-> [rose]
-					(x:xs)	-> concat rec)
+                    []    -> [rose]
+                    (x:xs)    -> concat rec)
 
 ramasRT :: Explorador (RoseTree a) [a]
 ramasRT = foldRT (\rose rec -> case rec of
-							[]	-> [[rose]]
-							(x:xs)	-> map (\path -> rose : path) (concat rec))
+                            []    -> [[rose]]
+                            (x:xs)    -> map (\path -> rose : path) (concat rec))
 
 --Ejercicio 7
 ifExp :: (a->Bool) -> Explorador a b -> Explorador a b -> Explorador a b
 ifExp f exp1 exp2 =  (\x -> case (f x) of 
-						True ->  exp1 x 
-						False->	 exp2 x ) 
+                        True ->  exp1 x 
+                        False->     exp2 x ) 
 
 --Ejercicio 8
 (<++>) :: Explorador a b -> Explorador a b -> Explorador a b
@@ -121,6 +121,6 @@ listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[
 
 paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
 paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
- 
+
 (<*>) :: Explorador a a -> Explorador a [a] 
-(<*>) = undefined
+(<*>) exp = undefined --takeWhile (/=[]) (\y ->iterate exp y)
