@@ -122,5 +122,9 @@ listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[
 paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
 paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
 
-(<*>) :: Explorador a a -> Explorador a [a] 
-(<*>) exp = undefined --takeWhile (/=[]) (\y ->iterate exp y)
+--(<*>) :: Explorador a a -> Explorador a [a] 
+--(<*>) exp = undefined --takeWhile (/=[]) (\y ->iterate exp y)
+(<*>) :: Eq a =>Explorador a a -> Explorador a [a] 
+(<*>) expl x = let xs = iterate (\pair -> (snd pair , concat $ map expl $ snd pair)) (expl x, expl x) in 
+			map (fst) $ takeWhile (\pair -> fst pair /= snd pair) (tail xs)
+			
