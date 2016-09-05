@@ -68,7 +68,7 @@ sufijos :: Explorador [a] [a]
 sufijos = foldr (\currentElem rec -> (currentElem : head rec) : rec) [[]]
 
 --Ejercicio 4
---No se responder esto con claridad porque aun no me di cuenta como encararlo con foldNat ni que implicaria el hacerlo (ver luego)
+--Si usáramos foldNat deberíamos especificar el argumento con el que se va a hacer la recursión. Éste puede ser, o bien la suma, o bien el tamaño de la lista. Hacerlo sobre el tamaño implicaría agregar un elemento en cada iteración cuando en realidad el tamaño de las listas es variable. Por ejemplo, si hubiese que armar listas que suman 4, habría que poder formar [4] y [1,1,1,1], lo que no es posible con foldNat en el tamaño. Por otro lado, hacer la recursión sobre la suma tampoco tiene sentido pues el n se reduce en 1, y querríamos que se mantuviera estático.
 listasQueSuman :: Explorador Integer [Integer]
 listasQueSuman 0 = [[]] 
 listasQueSuman total = [ i : ls  | i <- [1 .. total], ls <- listasQueSuman (total-i)]
@@ -122,9 +122,6 @@ listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[
 paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
 paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
 
---(<*>) :: Explorador a a -> Explorador a [a] 
---(<*>) exp = undefined --takeWhile (/=[]) (\y ->iterate exp y)
 (<*>) :: Eq a => Explorador a a -> Explorador a [a] 
 (<*>) expl x = let xs = iterate (\xs -> concat $ map expl xs) (expl x) in 
-			takeWhile (\ys -> ys /= []) xs
-			
+            takeWhile (\ys -> ys /= []) xs
