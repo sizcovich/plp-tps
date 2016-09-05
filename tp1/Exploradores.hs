@@ -89,19 +89,19 @@ dfsRT = foldRT (\rose rec -> [rose] ++ concat rec)
 
 hojasRT :: Explorador (RoseTree a) a
 hojasRT = foldRT (\rose rec -> case rec of
-                    []    -> [rose]
-                    (x:xs)    -> concat rec)
+                    []      -> [rose]
+                    (x:xs)  -> concat rec)
 
 ramasRT :: Explorador (RoseTree a) [a]
 ramasRT = foldRT (\rose rec -> case rec of
-                            []    -> [[rose]]
-                            (x:xs)    -> map (\path -> rose : path) (concat rec))
+                    []      -> [[rose]]
+                    (x:xs)  -> map (\path -> rose : path) (concat rec))
 
 --Ejercicio 7
 ifExp :: (a->Bool) -> Explorador a b -> Explorador a b -> Explorador a b
 ifExp f exp1 exp2 =  (\x -> case (f x) of 
-                        True ->  exp1 x 
-                        False->     exp2 x ) 
+                        True -> exp1 x 
+                        False-> exp2 x)
 
 --Ejercicio 8
 (<++>) :: Explorador a b -> Explorador a b -> Explorador a b
