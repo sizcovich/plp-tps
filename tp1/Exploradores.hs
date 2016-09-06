@@ -123,5 +123,5 @@ paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
 paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
 
 (<*>) :: Eq a => Explorador a a -> Explorador a [a] 
-(<*>) expl x = let xs = iterate (\xs -> concat $ map expl xs) (expl x) in 
+(<*>) expl x = let xs = [x]:iterate (\xs -> concat $ map expl xs) (expl x) in 
             takeWhile (\ys -> ys /= []) xs
