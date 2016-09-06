@@ -116,12 +116,36 @@ ifExp f exp1 exp2 =  (\x -> case (f x) of
 (<^>) expl n = foldNat ((<.>) expl) expl (n-1)
 
 --Ejercicio 11
+
+--Descripcion Ejercicio 11, opcional 1
+--La funcion paresSumatoriaLista lo que hace es generar una lista de lista de pares <Lista, sumatoria_elementos_de_Lista>; se llama a esta funcion
+-- con un valor de size prefijado (n) y se itera por diferentes sumatoria_total (suma) cuyo valor minimo es en particular n ( lista de n uno's, lista de sumatoria minima de tamaño n)
+--el concat es para aplanar ese primer nivel asi quedan en una lista universal todos los pares mencionados para el size fijo y para cada sumatoria total.
+--luego el map se hace para quedarse con lo que me interesa de los pares que son las listas, no lo que vale la sumatoria.
+
+--paresSumatoriaLista
+--te da una lista de estos pares a partir del size que se especifique y lo que debe valer la sumatoria de sus elementos,
+--despues de n iteraciones del foldNat me genera todas las listas de n elementos con sumatoria MENOR O IGUAL a la sumatoria del parametro
+--Es por esto que delante del foldNat se utiliza el filter para quedarme con las listas de tamaño n con sumatoria exactamente igual a suma (que es lo que me interesa)
+--El foldNat toma el n indicando las n iteraciones, se comienza con un z = [(0,[])]: primer par de una lista vacia con 0 (correspondiente sumatoria)
+--en cada iteracion se generara de manera eficiente, a partir de cada par, nuevos pares que contendran la lista anterior agregandole un elemento que no sobrepasa la sumatoria esperada.
+--claro que ademas se actualizara el atributo del par que indica la sumatoria total de la lista que se acabo de agregar.
+--Hay que notar, nuevamente, que la lista de pares resultantes contiene pares que no nos sirven pero que son generadas por el comportamiento del algoritmo.
+--por ejemplo, si llamamos a paresSumatoriaLista 4 3, el par <3, [1,1,1]> es valido ya que nunca sobre pasa el limite que es 4, aqui es donde el filter actua y excluye esta clase de resultados.
+
 listasDeLongitud :: Explorador Integer [Integer]
 listasDeLongitud n = map (snd) $ concat $ [paresSumatoriaLista suma n | suma <-[n .. ]]
 
 paresSumatoriaLista :: Integer -> Integer -> [(Integer, [Integer])]
 paresSumatoriaLista suma n = filter (\pair -> fst(pair) == suma) $ foldNat (\pairs -> [ (fst(pair) + i, (snd(pair) ++ [i]))   | pair <- pairs, i <- [1 .. suma - fst(pair)]]) [(0,[])] n
 
+--Descripcion Ejercicio 11, opcional 2.
+--Comenzando con el caso base [x] (sabemos que lo que devuelven los exploradores siempre son listas de algo entonces esto nos dio la pauta para poner el x entre corchetes como caso base)
+--el iterate, en cada iteracion, aplica el explorador (mediante el map) a cada elemento de la ultima lista no explorada de la lista de listas (esta lista sera en principio [x])
+--pero como los exploradores devuelven una lista cuando se lo aplica a un elemento entonces aplicarselo a algo de la pinta [x1,x2] uno por uno
+-- dará algo como [[y1..yk] , [z1..zj]] entonces lo que se hace es concat de estos resultados para aplanar y juntar los resultados en una unica lista.
+--dejandonos algo como esto: [y1..yk, z1..zj] y este será el resultado en un paso del iterate, el take while corrobora si se alcanzo un resultado cuyo valor sea vacio 
+--(representado con la lista vacia por la cardinalidad y comportamiento de los exploradores en general.)
 (<*>) :: Eq a => Explorador a a -> Explorador a [a] 
 (<*>) expl x = let xs = iterate (\xs -> concat $ map expl xs) [x] in 
             takeWhile (\ys -> ys /= []) xs
