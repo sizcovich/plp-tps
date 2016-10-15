@@ -26,11 +26,11 @@ prefijos(L,P) :- append(P,_,L).
 
 %calculoDeTrazas(+Proceso, -Cadenas)
 calculoDetrazas(tau,[[]]).
-calculoDetrazas(Proc,L) :- reduceLista(Proc,L,0).
+calculoDetrazas(Proc,L) :- reduceLista(Proc,M,0), prefijos(M,L).
 calculoDetrazas(P+Q,L):- calculoDetrazas(P,L1), calculoDetrazas(Q,L2), append([L1],[L2],L).
 
 %trazas(+Proceso, -Cadenas)
-trazas(Proc,L) :- setof(K,calculoDetrazas(Proc,K),L).
+trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 
