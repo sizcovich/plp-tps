@@ -24,10 +24,13 @@ reduceLista(P1,[X|L],P2) :- reduce(P1,X,T), X \= tau, reduceLista(T,L,P2).
 prefijos([],[[]]).
 prefijos(L,P) :- append(P,_,L).
 
+%calculoDeTrazas(+Proceso, -Cadenas)
+calculoDetrazas(tau,[[]]).
+calculoDetrazas(Proc,L) :- reduceLista(Proc,L,0).
+calculoDetrazas(P+Q,L):- calculoDetrazas(P,L1), calculoDetrazas(Q,L2), append([L1],[L2],L).
+
 %trazas(+Proceso, -Cadenas)
-trazas(tau,[[]]).
-trazas(Proc,L) :- reduceLista(Proc,L,0).
-trazas(P+Q,L):- trazas(P,L1), trazas(Q,L2), append([L1],[L2],L).
+trazas(Proc,L) :- setof(K,calculoDetrazas(Proc,K),L).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 
