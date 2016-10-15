@@ -11,8 +11,7 @@ acciones(Mu*P,[Mu|L]) :- Mu \= tau, acciones(P,L).
 acciones(P+Q,L) :- acciones(P,L1), acciones(Q,L2), append(L1,L2,L).
 
 %reduce(+Proceso1,?Accion,?Proceso2)
-reduce(tau*P,tau,P).
-reduce(Mu*P,Mu,P) :- Mu \= tau.
+reduce(Mu*P,Mu,P).
 reduce(P+_,Mu,P1) :- acciones(P,Acciones),append([Mu],_,Acciones),reduce(P,Mu,P1).
 reduce(_+Q,Mu,Q1) :- acciones(Q,Acciones),append([Mu],_,Acciones),reduce(Q,Mu,Q1).
 
@@ -21,9 +20,14 @@ reduceLista(P,[],P).
 reduceLista(P1,L,P2) :- reduce(P1,X,T), X == tau, reduceLista(T,L,P2).
 reduceLista(P1,[X|L],P2) :- reduce(P1,X,T), X \= tau, reduceLista(T,L,P2).
 
+%prefijos(+L,?P)
+prefijos([],[[]]).
+prefijos(L,P) :- append(P,_,L).
+
 %trazas(+Proceso, -Cadenas)
-trazas(0,[]).
-%trazas(Proc,L) :- reduceLista(Proc,L,_) 
+trazas(tau,[[]]).
+trazas(Proc,L) :- reduceLista(Proc,L,0).
+trazas(P+Q,L):- trazas(P,L1), trazas(Q,L2), append([L1],[L2],L).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 
