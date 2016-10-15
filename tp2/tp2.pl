@@ -33,11 +33,16 @@ calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
 %trazas(+Proceso, -Cadenas)
 trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
+
 %residuo(+X,+Cadena,-Qs)
-%residuo()
+residuo(Proceso, Cadena, []) :- not(reduceLista(M,H,_)).
+residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
+residuo(Lss, Cadena, Residuos) :- consumirCadenaEnProcesos(Lss, Cadena, Residuos).
+
+consumirCadenaEnProcesos([], Cadena, []).
+consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), aplicarTraza(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
-
 test(0) :- not((acciones(0, L), member(_,L))).
 
 test(1) :- reduceLista(0,[],0).
