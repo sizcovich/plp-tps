@@ -4,6 +4,15 @@
 
 % Implementación de los predicados.
 
+%acciones(+Proceso,-Acciones)
+acciones(0,[]).
+acciones(tau*P,L) :- acciones(P,L).
+acciones(Mu*P,[Mu|L]) :- Mu \= tau, acciones(P,L).
+acciones(P+Q,L) :- acciones(P,L1), acciones(Q,L2), append(L1,L2,L).
+
+%reduce(+Proceso1,?Cadena,?Proceso2)
+%reduce(P)
+
 % Tests (van un par de ejemplos, agreguen los suyos).
 
 test(0) :- not((acciones(0, L), member(_,L))).
