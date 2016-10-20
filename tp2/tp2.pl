@@ -10,6 +10,8 @@ acciones(tau*P,L) :- acciones(P,L).
 acciones(Mu*P,[Mu|L]) :- Mu \= tau, acciones(P,L).
 acciones(P+Q,L) :- acciones(P,L1), acciones(Q,L2), append(L1,L2,L).
 
+
+%me parece que no hace falta acciones y el append en este metodo.
 %reduce(+Proceso1,?Accion,?Proceso2)
 reduce(Mu*P,Mu,P).
 reduce(P+_,Mu,P1) :- acciones(P,Acciones),append([Mu],_,Acciones),reduce(P,Mu,P1).
@@ -25,7 +27,7 @@ prefijos([],[[]]).
 prefijos(L,P) :- append(P,_,L).
 
 %calculoDeTrazas(+Proceso, -Cadenas)
-calculoDetrazas(tau,[[]]).
+%este caso base no va.
 calculoDetrazas(Proc,L) :- reduceLista(Proc,M,0), prefijos(M,L).
 calculoDetrazas(P+_,L1):- calculoDetrazas(P,L1).
 calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
@@ -35,12 +37,12 @@ trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
 
 %residuo(+X,+Cadena,-Qs)
-residuo(Proceso, Cadena, []) :- not(reduceLista(M,H,_)).
 residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
 residuo(Lss, Cadena, Residuos) :- consumirCadenaEnProcesos(Lss, Cadena, Residuos).
+residuo(Proceso, Cadena, []) :- not	(reduceLista(Proceso,Cadena,_)).
 
-consumirCadenaEnProcesos([], Cadena, []).
-consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), aplicarTraza(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
+consumirCadenaEnProcesos([Ps], Cadena, Ps2) :- residuo(Ps, Cadena, Ps2).
+consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 test(0) :- not((acciones(0, L), member(_,L))).
