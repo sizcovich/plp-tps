@@ -56,7 +56,11 @@ mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
 mustOneProcess(0, _).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
+puedeReemplazarA(P,Q) :- trazas(P, TrazasDeP), trazas(Q, TrazasDeQ), union(TrazasDeP, TrazasDeQ, TrazasPyQ) , acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ), not(probarTrazas(P, Q, TrazasPyQ, AccionesPyQ)). 
 
+probarTrazas(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, Pprima) , residuo(Q, Traza, Qprima), must(Pprima, AccionesPyQ), not(must(Qprima, AccionesPyQ)) , probarTrazas(P, Q, TrazasPyQ , AccionesPyQ).
+
+equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 test(0) :- not((acciones(0, L), member(_,L))).
