@@ -39,10 +39,24 @@ trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 %residuo(+X,+Cadena,-Qs)
 residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
 residuo(Lss, Cadena, Residuos) :- consumirCadenaEnProcesos(Lss, Cadena, Residuos).
-residuo(Proceso, Cadena, []) :- not	(reduceLista(Proceso,Cadena,_)).
+residuo(Proceso, Cadena, []) :- not(reduceLista(Proceso,Cadena,_)).
 
 consumirCadenaEnProcesos([Ps], Cadena, Ps2) :- residuo(Ps, Cadena, Ps2).
 consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
+
+isList([_|_]).
+isList([]).
+
+must(P, Ls) :- isList(P), mustList(P,Ls).
+must(P, Ls) :- not(isList(P)), mustOneProcess(P,Ls).
+
+mustList([], _).
+mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
+
+mustOneProcess(0, _).
+mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
+
+
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 test(0) :- not((acciones(0, L), member(_,L))).
