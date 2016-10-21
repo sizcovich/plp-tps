@@ -56,14 +56,20 @@ mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
 mustOneProcess(0, _).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
-puedeReemplazarA(P,Q) :- trazas(P, TrazasDeP), trazas(Q, TrazasDeQ), union(TrazasDeP, TrazasDeQ, TrazasPyQ) , acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ), not(probarTrazas(P, Q, TrazasPyQ, AccionesPyQ)). 
+puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  append(L, _, AccionesPyQ), not(probarTrazas(P, Q, TrazasPyQ, L)). 
+getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
+getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
 
-probarTrazas(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, Pprima) , residuo(Q, Traza, Qprima), must(Pprima, AccionesPyQ), not(must(Qprima, AccionesPyQ)) , probarTrazas(P, Q, TrazasPyQ , AccionesPyQ).
+
+probarTrazas(_, _, [] , _).
+
+probarTrazas(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), must(PResiduos, AccionesPyQ), not(must(QResiduos, AccionesPyQ)) ; probarTrazas(P, Q, TrazasPyQ , AccionesPyQ).
+
 
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
-test(0) :- not((acciones(0, L), member(_,L))).
+test(0) :- not((acciones( 0 , L ), member( _ , L ))).
 
 test(1) :- reduceLista(0,[],0).
 
