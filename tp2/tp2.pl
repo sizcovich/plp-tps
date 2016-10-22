@@ -47,6 +47,7 @@ consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps
 isList([_|_]).
 isList([]).
 
+%must(+P,+L).
 must(P, Ls) :- isList(P), mustList(P,Ls).
 must(P, Ls) :- not(isList(P)), mustOneProcess(P,Ls).
 
@@ -56,6 +57,7 @@ mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
 mustOneProcess(0, _).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
+%puedeReemplazarA(+P, +Q)
 puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  append(L, _, AccionesPyQ), not(probarTrazas(P, Q, TrazasPyQ, L)). 
 getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
@@ -65,7 +67,7 @@ probarTrazas(_, _, [] , _).
 
 probarTrazas(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), must(PResiduos, AccionesPyQ), not(must(QResiduos, AccionesPyQ)) ; probarTrazas(P, Q, TrazasPyQ , AccionesPyQ).
 
-
+%equivalentes(+P, +Q)
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
