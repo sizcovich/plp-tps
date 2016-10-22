@@ -58,14 +58,25 @@ mustOneProcess(0, _).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
 %puedeReemplazarA(+P, +Q)
-puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  append(L, _, AccionesPyQ), not(probarTrazas(P, Q, TrazasPyQ, L)). 
+subseq0(List, List).
+subseq0(List, Rest) :-
+   subseq1(List, Rest).
+
+subseq1([_|Tail], Rest) :-
+   subseq0(Tail, Rest).
+subseq1([Head|Tail], [Head|Rest]) :-
+   subseq1(Tail, Rest).
+
 getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
+puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  not(algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ, AccionesPyQ)). 
 
+algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), probarSubSetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
 
-probarTrazas(_, _, [] , _).
+probarSubSetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subseq0(AccionesPyQ, X), SubSets), findAnySubSet(PResiduos, QResiduos, SubSets).
 
-probarTrazas(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), must(PResiduos, AccionesPyQ), not(must(QResiduos, AccionesPyQ)) ; probarTrazas(P, Q, TrazasPyQ , AccionesPyQ).
+findAnySubSet(PResiduos,QResiduos,[Sset | Ssets]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); findAnySubSet(PResiduos,QResiduos,Ssets).
+
 
 %equivalentes(+P, +Q)
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
