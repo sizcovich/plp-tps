@@ -55,6 +55,7 @@ mustList([], _).
 mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
 
 mustOneProcess(0, _).
+mustOneProcess(tau*P, Ls) :- mustOneProcess(P, Ls).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
 %puedeReemplazarA(+P, +Q)
