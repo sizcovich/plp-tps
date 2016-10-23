@@ -44,12 +44,11 @@ residuo(Proceso, Cadena, []) :- not(reduceLista(Proceso,Cadena,_)).
 consumirCadenaEnProcesos([Ps], Cadena, Ps2) :- residuo(Ps, Cadena, Ps2).
 consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
 
-isList([_|_]).
-isList([]).
+
 
 %must(+P,+L).
-must(P, Ls) :- isList(P), mustList(P,Ls).
-must(P, Ls) :- not(isList(P)), mustOneProcess(P,Ls).
+must(P, Ls) :- is_list(P), mustList(P,Ls).
+must(P, Ls) :- not(is_list(P)), mustOneProcess(P,Ls).
 
 mustList([], _).
 mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
