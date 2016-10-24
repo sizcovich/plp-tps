@@ -12,8 +12,8 @@ acciones(P+Q,L) :- acciones(P,L1), acciones(Q,L2), append(L1,L2,L).
 
 %reduce(+Proceso1,?Accion,?Proceso2)
 reduce(Mu*P,Mu,P).
-reduce(P+_,Mu,P1) :- acciones(P,Acciones),append([Mu],_,Acciones),reduce(P,Mu,P1).
-reduce(_+Q,Mu,Q1) :- acciones(Q,Acciones),append([Mu],_,Acciones),reduce(Q,Mu,Q1).
+reduce(P+_,Mu,P1) :- reduce(P,Mu,P1).
+reduce(_+Q,Mu,Q1) :- reduce(Q,Mu,Q1).
 
 %reduceLista(+Proceso1,?Cadena,?Proceso2)
 reduceLista(P,[],P).
