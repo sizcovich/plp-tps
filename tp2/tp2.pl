@@ -54,6 +54,27 @@ mustOneProcess(0, _).
 mustOneProcess(tau*P, Ls) :- mustOneProcess(P, Ls).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
+%La idea de esta funcion es la de primero generar todas las trazas, luego todas las acciones,y luego 
+% como todo esta instanciado a la hora de llamar a algunaTrazaYSubDeAccRompen el comportamiento del not sera
+% analogo al NOT logico. algunaTrazaYSubDeAccRompen lo que hace es tratar de encontrar una traza y un conjunto de acciones tal que al aplicarle la traza a ambos procesos P y Q
+% dicho conjunto de acciones (generados todos en generarYProbarSubsetsDeAcciones) rompa la negacion del predicado que en realidad debe cumplirse
+% con encontrar una combinacion de Traza + Acciones que rompa el predicado este dara algunaTrazaYSubDeAccRompen dara TRUE
+% y el not hara que de FALSE puedeReemplazarA, implicando justamente que no puede ser reemplazado P por Q.
+% Ahora bien, si da false el predicado algunaTrazaYSubDeAccRompen, significa que no pudo cumplirse la negacion del predicado a cumplir del enunciado,
+% lo cual significa que para todo conjunto de acciones y trazas posibles se cumple la definicion de puedeReemplazarA sin negar, haciendo que finalmente el not que encierra a algunaTrazaYSubDeAccRompen
+% de TRUE, implicando en el TRUE de puedeReemplazarA.
+%puedeReemplazarA(+P, +Q)
+puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  not(algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ, AccionesPyQ)). 
+	
+%algunaTrazaYSubDeAccRompen(+P, +Q, +Ts, +Accs)
+algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
+
+%generarYProbarSubsetsDeAcciones(+PResiduos, +QResiduos, +AccionesPyQ)
+generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subseq0(AccionesPyQ, X), SubSets), anySubsetMatches(PResiduos, QResiduos, SubSets).
+
+%anySubsetMatches(+PResiduos, +QResiduos, +Ssets)
+anySubsetMatches(PResiduos,QResiduos,[Sset | Ssets]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); anySubsetMatches(PResiduos,QResiduos,Ssets).
+
 %subseq0(+List, ?List)
 subseq0(List, List).
 subseq0(List, Rest) :- subseq1(List, Rest).
@@ -68,20 +89,10 @@ getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(Tr
 %getAccionesPQ(+P, +Q, ?AccionesPyQ)
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
 
-%puedeReemplazarA(+P, +Q)
-puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  not(algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ, AccionesPyQ)). 
-
-%algunaTrazaYSubDeAccRompen(+P, +Q, +Ts, +Accs)
-algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
-
-%generarYProbarSubsetsDeAcciones(+PResiduos, +QResiduos, +AccionesPyQ)
-generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subseq0(AccionesPyQ, X), SubSets), anySubsetMatches(PResiduos, QResiduos, SubSets).
-
-%anySubsetMatches(+PResiduos, +QResiduos, +Ssets)
-anySubsetMatches(PResiduos,QResiduos,[Sset | Ssets]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); anySubsetMatches(PResiduos,QResiduos,Ssets).
 
 %equivalentes(+P, +Q)
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
+
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 test(0) :- not((acciones( 0 , L ), member( _ , L ))).
