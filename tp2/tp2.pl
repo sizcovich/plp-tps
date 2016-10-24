@@ -59,6 +59,8 @@ subseq1([Head|Tail], [Head|Rest]) :- subseq1(Tail, Rest).
 
 getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
+
+%puedeReemplazarA(+P, +Q)
 puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, AccionesPyQ),  not(algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ, AccionesPyQ)). 
 
 algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), probarSubSetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
@@ -88,6 +90,10 @@ test(8) :- acciones((b*0),[b]).
 test(9) :- acciones(c*((a*0) + (b*tau*0)),[c,a,b]).
 
 %Tests de reduce
+test(10) :- reduce((a*b*c*0),a, (b*c*0)).
+test(11) :- reduce(((a*b*0)+ (b*tau*0)),a,(b*0)).
+test(12) :- reduce(((a*b*0)+ (b*tau*0)),b,(tau*0)).
 
+%test de reduceLista
 
 tests :- forall(between(0, 9, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
