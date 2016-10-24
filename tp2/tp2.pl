@@ -10,8 +10,6 @@ acciones(tau*P,L) :- acciones(P,L).
 acciones(Mu*P,[Mu|L]) :- Mu \= tau, acciones(P,L).
 acciones(P+Q,L) :- acciones(P,L1), acciones(Q,L2), append(L1,L2,L).
 
-
-%me parece que no hace falta acciones y el append en este metodo.
 %reduce(+Proceso1,?Accion,?Proceso2)
 reduce(Mu*P,Mu,P).
 reduce(P+_,Mu,P1) :- acciones(P,Acciones),append([Mu],_,Acciones),reduce(P,Mu,P1).
@@ -27,14 +25,12 @@ prefijos([],[[]]).
 prefijos(L,P) :- append(P,_,L).
 
 %calculoDeTrazas(+Proceso, -Cadenas)
-%este caso base no va.
 calculoDetrazas(Proc,L) :- reduceLista(Proc,M,0), prefijos(M,L).
 calculoDetrazas(P+_,L1):- calculoDetrazas(P,L1).
 calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
 
 %trazas(+Proceso, -Cadenas)
 trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
-
 
 %residuo(+X,+Cadena,-Qs)
 residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
@@ -43,8 +39,6 @@ residuo(Proceso, Cadena, []) :- not(reduceLista(Proceso,Cadena,_)).
 
 consumirCadenaEnProcesos([Ps], Cadena, Ps2) :- residuo(Ps, Cadena, Ps2).
 consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, Ps2), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPs), union(Ps2, ResiduoPs, Residuos).
-
-
 
 %must(+P,+L).
 must(P, Ls) :- is_list(P), mustList(P,Ls).
@@ -57,15 +51,11 @@ mustOneProcess(0, _).
 mustOneProcess(tau*P, Ls) :- mustOneProcess(P, Ls).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
-%puedeReemplazarA(+P, +Q)
 subseq0(List, List).
-subseq0(List, Rest) :-
-   subseq1(List, Rest).
+subseq0(List, Rest) :- subseq1(List, Rest).
 
-subseq1([_|Tail], Rest) :-
-   subseq0(Tail, Rest).
-subseq1([Head|Tail], [Head|Rest]) :-
-   subseq1(Tail, Rest).
+subseq1([_|Tail], Rest) :- subseq0(Tail, Rest).
+subseq1([Head|Tail], [Head|Rest]) :- subseq1(Tail, Rest).
 
 getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
@@ -76,7 +66,6 @@ algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P
 probarSubSetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subseq0(AccionesPyQ, X), SubSets), findAnySubSet(PResiduos, QResiduos, SubSets).
 
 findAnySubSet(PResiduos,QResiduos,[Sset | Ssets]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); findAnySubSet(PResiduos,QResiduos,Ssets).
-
 
 %equivalentes(+P, +Q)
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
@@ -92,5 +81,6 @@ test(3) :- puedeReemplazarA(tau*a*0, a*0).
 test(4) :- equivalentes(a*b*(c*0+d*0), a*b*(d*tau*0+c*0)).
 test(5) :- not(equivalentes(a*b*0, b*a*0)).
 test(6) :- not(acciones(c*((a*0) + (b*tau*0)),[])).
+test(7) :-acciones((b*tau*0),[b]).
 
-tests :- forall(between(0, 5, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
+tests :- forall(between(0, 7, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
