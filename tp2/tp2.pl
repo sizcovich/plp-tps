@@ -159,5 +159,6 @@ test(35) :- equivalentes(a*b*c*0,a*tau*b*c*tau*0).
 test(36) :- equivalentes(a*b*c*0,a*b*c*0).
 test(37) :- not(equivalentes(a*b*c*0,a*b*0)).
 test(38) :- not(equivalentes(a*b*c,a*b*c)).
+test(39) :- equivalentes(a*tau*b*c*tau*0,a*b*c*0).
 
-tests :- forall(between(0, 38, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
+tests :- forall(between(0, 39, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
