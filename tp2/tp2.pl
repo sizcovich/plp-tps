@@ -106,16 +106,22 @@ test(4) :- equivalentes(a*b*(c*0+d*0), a*b*(d*tau*0+c*0)).
 test(5) :- not(equivalentes(a*b*0, b*a*0)).
 test(6) :- not(acciones(c*((a*0) + (b*tau*0)),[])).
 
-%Tests de acciones
+
 test(7) :- acciones((b*tau*0),[b]).
 test(8) :- acciones((b*0),[b]).
 test(9) :- acciones(c*((a*0) + (b*tau*0)),[c,a,b]).
 
-%Tests de reduce
 test(10) :- reduce((a*b*c*0),a, (b*c*0)).
 test(11) :- reduce(((a*b*0)+ (b*tau*0)),a,(b*0)).
 test(12) :- reduce(((a*b*0)+ (b*tau*0)),b,(tau*0)).
 
-%test de reduceLista
+test(13) :- not(reduceLista(c *((a*0) + (b * 0)), b,_)).
 
-tests :- forall(between(0, 9, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
+test(14) :- trazas( ((a*0) + (b * tau * 0)), [[], [a], [b]]).
+
+test(15) :- residuo((a*0+b*tau*0+b*c*0),[c],[]).
+
+
+
+
+tests :- forall(between(0, 15, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
