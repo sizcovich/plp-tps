@@ -121,7 +121,11 @@ test(14) :- trazas( ((a*0) + (b * tau * 0)), [[], [a], [b]]).
 
 test(15) :- residuo((a*0+b*tau*0+b*c*0),[c],[]).
 
+test(16) :- not(must([d*0,(b*d*0)],[c])).
+
+test(17) :- puedeReemplazarA(a*tau*0,a*0).
+
+test(18) :- equivalentes(a*b*c*0,a*tau*b*c*tau*0).
 
 
-
-tests :- forall(between(0, 15, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
+tests :- forall(between(0, 18, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
