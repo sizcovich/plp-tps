@@ -72,18 +72,18 @@ puedeReemplazarA(P,Q) :- getTrazasPQ(P, Q, TrazasPyQ), getAccionesPQ(P, Q, Accio
 algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
 
 %generarYProbarSubsetsDeAcciones(+PResiduos, +QResiduos, +AccionesPyQ)
-generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subseq0(AccionesPyQ, X), SubSets), anySubsetMatches(PResiduos, QResiduos, SubSets).
+generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subsecuencia(AccionesPyQ, X), SubSets), anySubsetMatches(PResiduos, QResiduos, SubSets).
 
 %anySubsetMatches(+PResiduos, +QResiduos, +Ssets)
 anySubsetMatches(PResiduos,QResiduos,[Sset | Ssets]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); anySubsetMatches(PResiduos,QResiduos,Ssets).
 
 %subseq0(+List, ?List)
-subseq0(List, List).
-subseq0(List, Rest) :- subseq1(List, Rest).
+subsecuencia(List, List).
+subsecuencia(List, Rest) :- subseq(List, Rest).
 
 %subseq0(+List, ?Rest)
-subseq1([_|Tail], Rest) :- subseq0(Tail, Rest).
-subseq1([Head|Tail], [Head|Rest]) :- subseq1(Tail, Rest).
+subseq([_|Tail], Rest) :- subsecuencia(Tail, Rest).
+subseq([Head|Tail], [Head|Rest]) :- subseq(Tail, Rest).
 
 %puedeReemplazarA(+P, +Q, ?TrazasPyQ)
 getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(TrazasP, TrazasQ, TrazasPyQ).
