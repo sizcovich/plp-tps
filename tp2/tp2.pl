@@ -93,11 +93,11 @@ anySubsetMatches(PResiduos,QResiduos,[Sset | SsetsAcciones]) :- must(PResiduos, 
 %subsecuencias de una lista
 %subsecuencia(+List, ?List)
 subsecuencia(List, List).
-subsecuencia(List, Rest) :- subseq(List, Rest).
+subsecuencia(List, Resto) :- subsecuenciaCasoListaNoVacia(List, Resto).
 
-%subseq(+List, ?Rest)
-subseq([_|Tail], Rest) :- subsecuencia(Tail, Rest).
-subseq([Head|Tail], [Head|Rest]) :- subseq(Tail, Rest).
+%subsecuenciaCasoListaNoVacia(+List, ?Resto)
+subsecuenciaCasoListaNoVacia([_|Cola], Resto) :- subsecuencia(Cola, Resto).
+subsecuenciaCasoListaNoVacia([X|Cola], [X|Resto]) :- subsecuenciaCasoListaNoVacia(Cola, Resto).
 
 %trazas(P) U trazas(Q)
 %getTrazasPyQ(+P, +Q, ?TrazasPyQ)
