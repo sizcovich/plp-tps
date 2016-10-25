@@ -96,17 +96,12 @@ equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
 
 % Tests (van un par de ejemplos, agreguen los suyos).
 test(0) :- not((acciones( 0 , L ), member( _ , L ))).
-
 test(1) :- reduceLista(0,[],0).
-
 test(2) :- not(puedeReemplazarA(moneda * (te * 0 + cafe * 0), moneda * te * 0 + moneda * cafe * 0)).
 test(3) :- puedeReemplazarA(tau*a*0, a*0).
-
 test(4) :- equivalentes(a*b*(c*0+d*0), a*b*(d*tau*0+c*0)).
 test(5) :- not(equivalentes(a*b*0, b*a*0)).
 test(6) :- not(acciones(c*((a*0) + (b*tau*0)),[])).
-
-
 test(7) :- acciones((b*tau*0),[b]).
 test(8) :- acciones((b*0),[b]).
 test(9) :- acciones(c*((a*0) + (b*tau*0)),[c,a,b]).
@@ -116,16 +111,35 @@ test(11) :- reduce(((a*b*0)+ (b*tau*0)),a,(b*0)).
 test(12) :- reduce(((a*b*0)+ (b*tau*0)),b,(tau*0)).
 
 test(13) :- not(reduceLista(c *((a*0) + (b * 0)), b,_)).
+test(14) :- reduceLista(0,[],0).
+test(15) :- reduceLista(c * ((a*0) + (b * tau * 0)), [], (c* (a*0+b*tau*0))).
+test(16) :- reduceLista(c * ((a*0) + (b * tau * 0)), [c, b], (tau*0)).
+test(17) :- reduceLista(c * ((a*0) + (b * tau * 0)), [c, b], 0).
 
-test(14) :- trazas( ((a*0) + (b * tau * 0)), [[], [a], [b]]).
+test(18) :- trazas( ((a*0) + (b * tau * 0)), [[], [a], [b]]).
+test(19) :- trazas((a*0) + (b * 0), [[], [a], [b]]).
+test(20) :- trazas(c * ((a*0) + (b * tau * 0)), [[], [c], [c, a], [c, b]]).
 
-test(15) :- residuo((a*0+b*tau*0+b*c*0),[c],[]).
+test(21) :- residuo((a*0+b*tau*0+b*c*0),[c],[]).
+test(22) :- residuo((a*0+b*tau*0+b*c*0),[b],[0, c*0, tau*0]).
+test(23) :- residuo([(a*0+b*tau*0+b*c*0),(b*a*c*0)],[b],[0, c*0, tau*0, a*c*0]).
+test(24) :- residuo([(a*0+b*tau*0+b*c*0),(b*a*c*0+b*c*0)],[b],[0, tau*0, a*c*0, c*0]).
 
-test(16) :- not(must([d*0,(b*d*0)],[c])).
+test(25) :- not(must([d*0,(b*d*0)],[c])).
+test(26) :- must((a*0+b*0+b*c*0),[a]).
+test(27) :- must((tau*b*0+b*c*0),[b]).
+test(28) :- must((a*0+b*c*0),[a,b]).
+test(29) :- not(must((a*0+b*c*0),[c])).
+test(30) :- not(must([c*0,(b*c*0)],[c])).
+test(31) :- must([b*0,(a*0+b*c*0)],[b]).
 
-test(17) :- puedeReemplazarA(a*tau*0,a*0).
+test(32) :- puedeReemplazarA(a*tau*0,a*0).
+test(33) :- puedeReemplazarA(tau*tau*a*tau*0,a*0).
+test(34) :- puedeReemplazarA(a*0,a*0).
 
-test(18) :- equivalentes(a*b*c*0,a*tau*b*c*tau*0).
+test(35) :- equivalentes(a*b*c*0,a*tau*b*c*tau*0).
+test(36) :- equivalentes(a*b*c*0,a*b*c*0).
+test(37) :- not(equivalentes(a*b*c*0,a*b*0)).
+test(38) :- not(equivalentes(a*b*c,a*b*c)).
 
-
-tests :- forall(between(0, 18, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
+tests :- forall(between(0, 38, N), test(N)). %Actualizar la cantidad total de tests para contemplar los que agreguen ustedes.
