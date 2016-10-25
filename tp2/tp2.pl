@@ -29,6 +29,7 @@ calculoDetrazas(Proc,L) :- reduceLista(Proc,M,0), prefijos(M,L).
 calculoDetrazas(P+_,L1):- calculoDetrazas(P,L1).
 calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
 
+%utilizamos setof para devolver todas las trazas posibles en una lista
 %trazas(+Proceso, -Cadenas)
 trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
@@ -37,6 +38,7 @@ residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
 residuo(Lss, Cadena, Residuos) :- consumirCadenaEnProcesos(Lss, Cadena, Residuos).
 residuo(Proceso, Cadena, []) :- not(reduceLista(Proceso,Cadena,_)).
 
+%utilizamos union para devolver una lista de resultados sin repetidos
 %consumirCadenaEnProcesos(+Pss, +Cadena, ?Residuos)
 consumirCadenaEnProcesos([Ps], Cadena, Residuos) :- residuo(Ps, Cadena, Residuos).
 consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, ResiduosPs), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPss), union(ResiduosPs, ResiduoPss, Residuos).
@@ -88,7 +90,6 @@ getTrazasPQ(P, Q, TrazasPyQ) :- trazas(P, TrazasP), trazas(Q, TrazasQ), union(Tr
 
 %getAccionesPQ(+P, +Q, ?AccionesPyQ)
 getAccionesPQ(P, Q, AccionesPyQ) :- acciones(P, AccionesP), acciones(Q, AccionesQ), union(AccionesP,AccionesQ, AccionesPyQ).
-
 
 %equivalentes(+P, +Q)
 equivalentes(P, Q) :- puedeReemplazarA(P,Q), puedeReemplazarA(Q,P).
