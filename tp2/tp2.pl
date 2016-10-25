@@ -33,27 +33,27 @@ calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
 %trazas(+Proceso, -Cadenas)
 trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
-%se tiene la definciion de residuo para una lista de procesos y para un proceso unicamente.
-%si viene una lista se aplicara a cada uno de ellos la definicion de residuo para un proceso.
-%si es un proceso solo entonces directamente aplicaremos la definicion correspondiente de residuo.
-%En caso de que la cadena provista no pueda ser consumida por el proceso entonces se devolvera el residuo Vacio (tercera definicion de residuo)
+%se tiene la definicion de residuo para una lista de procesos y para un proceso unicamente.
+%en el caso de una lista se verificará si cada elemento cumple con la definicion de residuo para un proceso.
+%si es un proceso solo entonces directamente unificaremos la definicion correspondiente de residuo.
+%En caso de que la cadena provista no pueda ser consumida por el proceso entonces solo unifica el residuo Vacio (tercera definicion de residuo)
 %residuo(+X,+Cadena,-Qs)
 residuo(Proceso, Cadena, Ps2) :- setof(X, reduceLista(Proceso, Cadena, X), Ps2).
 residuo(Lss, Cadena, Residuos) :- consumirCadenaEnProcesos(Lss, Cadena, Residuos).
 residuo(Proceso, Cadena, []) :- not(reduceLista(Proceso,Cadena,_)).
 
-%utilizamos union para devolver una lista de resultados sin repetidos
-%aplicamos la cadena a cada proceso ( s ) y nos quedamos con todos los residuos generados
+%utilizamos union para que lo unico que unifique con Residuos sea una lista de resultados sin repetidos
+%hacemos una verificacion de la cadena con cada proceso ( s ) y solo unifican los residuos generados
 %consumirCadenaEnProcesos(+Pss, +Cadena, ?Residuos)
 consumirCadenaEnProcesos([Ps], Cadena, Residuos) :- residuo(Ps, Cadena, Residuos).
 consumirCadenaEnProcesos([Ps | Pss], Cadena, Residuos) :- residuo(Ps, Cadena, ResiduosPs), consumirCadenaEnProcesos(Pss, Cadena, ResiduoPss), union(ResiduosPs, ResiduoPss, Residuos).
 
-%Se hace distincion de cuando se tiene un proceso unicamente, o bien una lista de procesos.
+%Se hace la distincion de cuando se tiene un proceso o una lista de procesos.
 %must(+P,+L).
 must(P, Ls) :- is_list(P), mustList(P,Ls).
 must(P, Ls) :- not(is_list(P)), mustOneProcess(P,Ls).
 
-%recursion, para cada uno de los procesos de la lista de procesos debe verificar mustOneProcess
+%cada uno de los procesos de la lista de procesos debe verificar mustOneProcess
 %mustList(+Pss, +Ls)
 mustList([], _).
 mustList([Proceso | Pss], Ls) :- mustOneProcess(Proceso, Ls), mustList(Pss, Ls).
@@ -78,15 +78,15 @@ mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), Pro
 %puedeReemplazarA(+P, +Q)
 puedeReemplazarA(P,Q) :- getTrazasPyQ(P, Q, TrazasPyQ), getAccionesPyQ(P, Q, AccionesPyQ),  not(algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ, AccionesPyQ)). 
 
-%aplicaremos cada traza a ambos procesos (P y Q), y luego probamos con generarYProbarSubsetsDeAcciones todos los posibles subconjuntos de acciones posibles. 	
+%aplicaremos cada traza a ambos procesos (P y Q), y luego probamos con generarYProbarSubsetsDeAcciones todos los posibles subconjuntos de acciones posibles. Usa Generate & Test. 	
 %algunaTrazaYSubDeAccRompen(+P, +Q, +Ts, +Accs)
 algunaTrazaYSubDeAccRompen(P, Q, [Traza | TrazasPyQ] , AccionesPyQ) :- residuo(P, Traza, PResiduos) , residuo(Q, Traza, QResiduos), generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ); algunaTrazaYSubDeAccRompen(P, Q, TrazasPyQ , AccionesPyQ).
 
-%generacion de todos los conjuntos de acciones posibles a partir de las acciones de P y Q, luego se intenta buscar, entre alguno de ellos, uno que rompa el predicado que define puedeReemplazarA 
+%generacion de todos los conjuntos de acciones posibles a partir de las acciones de P y Q, luego se intenta buscar, entre alguno de ellos, uno que rompa el predicado que define puedeReemplazarA. Usa Generate & test.
 %generarYProbarSubsetsDeAcciones(+PResiduos, +QResiduos, +AccionesPyQ)
 generarYProbarSubsetsDeAcciones(PResiduos, QResiduos, AccionesPyQ) :- setof(X, subsecuencia(AccionesPyQ, X), SubSetsAcciones), anySubsetMatches(PResiduos, QResiduos, SubSetsAcciones).
 
-%dado un conjunto de sets de acciones, se verifica si almenos uno de ellos verifica la negacion del predicado que define puedeReemplazarA (dada en el enunciado)
+%dado un conjunto de sets de acciones, se verifica si al menos uno de ellos verifica la negacion del predicado que define puedeReemplazarA (dada en el enunciado)
 %anySubsetMatches(+PResiduos, +QResiduos, +SsetsAcciones)
 anySubsetMatches(PResiduos,QResiduos,[Sset | SsetsAcciones]) :- must(PResiduos, Sset), not(must(QResiduos, Sset)); anySubsetMatches(PResiduos,QResiduos,SsetsAcciones).
 
