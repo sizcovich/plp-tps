@@ -29,7 +29,7 @@ calculoDetrazas(Proc,L) :- reduceLista(Proc,M,0), prefijos(M,L).
 calculoDetrazas(P+_,L1):- calculoDetrazas(P,L1).
 calculoDetrazas(_+Q,L2):- calculoDetrazas(Q,L2).
 
-%utilizamos setof para devolver todas las trazas posibles en una lista
+%utilizamos setof para unificar todas las trazas posibles con una lista
 %trazas(+Proceso, -Cadenas)
 trazas(Proc,M) :- setof(K,calculoDetrazas(Proc,K),M).
 
@@ -65,9 +65,9 @@ mustOneProcess(0, _).
 mustOneProcess(tau*P, Ls) :- mustOneProcess(P, Ls).
 mustOneProcess(Proceso, [X | Ls]) :-  residuo(Proceso, [X], ProcesoResiduo), ProcesoResiduo \= [] ; mustOneProcess(Proceso, Ls).
 
-%La idea de esta funcion es la de primero generar todas las trazas y acciones de P y de Q, y luego realizar un testeo de cada traza con cada accion, aquí debe notarse el uso de la técnica Generate & Test.
+%La idea de esta funcion es la de primero generar todas las trazas y acciones de P y de Q, y luego realizar un testeo de cada traza con cada subconjunto de acciones, aquí debe notarse el uso de la técnica Generate & Test.
 %Como todo esta instanciado a la hora de llamar a algunaTrazaYSubDeAccRompen el comportamiento del not que lo encierra sera
-%analogo al del NOT logico. algunaTrazaYSubDeAccRompen lo que hace es tratar de encontrar una traza tal que al aplicarla a ambos procesos P y Q
+%analogo al del NOT logico. algunaTrazaYSubDeAccRompen lo que hace es tratar de encontrar una traza tal que al unificar ambos procesos P y Q con sus correspondientes residuos
 %se tome luego algun subconjunto de acciones (generados todos en generarYProbarSubsetsDeAcciones) tal que rompa la negacion del predicado que en realidad debe cumplirse para verificar puedeReemplazarA.
 %Con encontrar una combinacion de Traza + subconjunto_De_Acciones que verifique el predicado del enunciado, algunaTrazaYSubDeAccRompen unificará a TRUE
 %y el not que lo encierra unificará a FALSE, entonces puedeReemplazarA unificará a FALSE también, implicando justamente que no pueda ser reemplazado P por Q.
